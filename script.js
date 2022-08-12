@@ -5,9 +5,10 @@ const buttonStop = document.querySelector('.stop')
 const buttonSet = document.querySelector('.set')
 const buttonSoundOn = document.querySelector('.sound-on')
 const buttonSoundOff = document.querySelector('.sound-off')
-let minutes
+let timerTimerOut
 const minutesDisplay = document.querySelector('.minutes')
 const secondsDisplay = document.querySelector('.seconds')
+let minutes = Number(minutesDisplay.textContent)
 
 //Eventos
 function allClicks() {
@@ -23,7 +24,7 @@ allClicks()
 
 //Funções de callback
 function countdown() {
-  setTimeout(function() {
+  timerTimerOut = setTimeout(function() {
     seconds = Number(secondsDisplay.textContent)
     minutes = Number(minutesDisplay.textContent)
 
@@ -35,7 +36,7 @@ function countdown() {
     }
 
     if(seconds <= 0) {
-      seconds = 3
+      seconds = 60
       --minutes
     }
     
@@ -43,6 +44,11 @@ function countdown() {
 
     countdown()
   }, 1000)
+}
+
+function resetTimer() {
+  updateTimerDisplay(minutes, 0)
+  clearTimeout(timerTimerOut)
 }
 
 function handlePlayClick() {
@@ -57,6 +63,7 @@ function handlePlayClick() {
 function handlePauseClick() {
   buttonPlay.classList.remove('hide')
   buttonPause.classList.add('hide')
+  clearTimeout(timerTimerOut)
 }
 
 function handleStopClick() {
@@ -64,6 +71,8 @@ function handleStopClick() {
   buttonPause.classList.add('hide')
   buttonSet.classList.remove('hide')
   buttonStop.classList.add('hide')
+
+  resetTimer()
 }
 
 function handleSoundOn() {
@@ -83,6 +92,12 @@ function updateTimerDisplay(minutes, seconds) {
 }
 
 buttonSet.addEventListener('click', function() {
-  minutes = prompt('Quantos minutos?')
+  let newMinutes = prompt('Quantos minutos?')
+  if(!newMinutes) {
+    resetTimer()
+    return
+  }
+
+  minutes = newMinutes
   updateTimerDisplay(minutes, 0)
 })
